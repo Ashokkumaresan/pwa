@@ -7,8 +7,8 @@ if('serviceWorker' in navigator){
 }
 
 window.addEventListener('beforeinstallprompt',function(event){
+	deferredPrompt=event;
 event.preventDefault();
-deferredPrompt=event;
 return false;
 });
 
@@ -46,7 +46,7 @@ fetch('https://httpbin.org/post',{
 		'Content-Type':'application/json',
 		'Accept':'application/json'
 	},
-	body:JSON.stringify({message:"First Fetch post request"});
+	body:JSON.stringify({message:"First Fetch post request"})
 }).then(function(res){
 	console.log(res.json());
 }).catch(function(err){

@@ -3,6 +3,7 @@ var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 
 function openCreatePostModal() {
+  console.log("Post Modal");
   createPostArea.style.display = 'block';
   if(deferredPrompt){
   	deferredPrompt.prompt();
