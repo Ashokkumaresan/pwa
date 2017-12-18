@@ -1,5 +1,5 @@
-var STATIC_CACHE_NAME="static-v5";
-var DYNAMIC_CACHE_NAME="dynamic-v4";
+var STATIC_CACHE_NAME="static-v9";
+var DYNAMIC_CACHE_NAME="dynamic-v8";
 self.addEventListener('install',function(e){
 	console.log("[Service worker] installing service worker...",e);
 	e.waitUntil(
@@ -21,7 +21,7 @@ self.addEventListener('install',function(e){
 				]);
 		})
 		)
-});////////////////////////////////////////////////////////////////
+});//////////////////////////////
 self.addEventListener('activate',function(e){
 	console.log("[Service worker] activating service worker...",e);
 	e.waitUntil(

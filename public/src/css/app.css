@@ -6,3 +6,9 @@
 .drawer-option {
   padding: 16px;
 }
+#shared-moments{
+	text-align: center;
+}
+#shared-moments img{
+	width: 90%;
+}

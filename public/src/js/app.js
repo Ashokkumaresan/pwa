@@ -31,11 +31,11 @@ promise.then(function(txt){
 	console.log(err.code,err.msg);
 });
 
-fetch('https://httpbin.org/ip')
+fetch('https://pwademo-563fd.firebaseio.com/posts/first_post.json')
 .then(function(res){
 	return res.json();
 }).then(function(data){
-	console.log(data);
+	load_shared_date(data);
 }).catch(function(err){
 	console.log(err);
 });
@@ -52,3 +52,11 @@ fetch('https://httpbin.org/post',{
 }).catch(function(err){
 	console.log(err);
 });
+
+function load_shared_date(_data){
+	console.log(_data);
+	var _img_holder=document.querySelector('#shared-moments');
+	var _img=document.createElement("img");
+	_img.setAttribute("src",_data.image);
+	_img_holder.append(_img);
+}

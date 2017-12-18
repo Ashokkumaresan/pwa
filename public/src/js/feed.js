@@ -20,6 +20,13 @@ function openCreatePostModal() {
   	});
   	deferredPrompt=null;
   }
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations()
+      .then(function(reg){
+          for(var i=0;i<reg.length;i++)
+            reg[i].unregister();
+      })
+  }
 }
 
 function closeCreatePostModal() {
