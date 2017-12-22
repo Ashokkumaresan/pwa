@@ -1,5 +1,14 @@
-var STATIC_CACHE_NAME="static-v9";
-var DYNAMIC_CACHE_NAME="dynamic-v8";
+importScripts('/src/js/idb.js');
+importScripts('/src/js/utility.js');
+
+var STATIC_CACHE_NAME="static-v15";
+var DYNAMIC_CACHE_NAME="dynamic-v14";
+
+var dbPromise=idb.open('posts-store',1,function(db){
+if(!db.objectStoreNames.contains('posts')){
+	db.createObjectStore('posts',{keyPath:'id'});
+	}
+});
 self.addEventListener('install',function(e){
 	console.log("[Service worker] installing service worker...",e);
 	e.waitUntil(
@@ -21,7 +30,8 @@ self.addEventListener('install',function(e){
 				]);
 		})
 		)
-});//////////////////////////////
+});////////////////////////////////////////////////////////
+
 self.addEventListener('activate',function(e){
 	console.log("[Service worker] activating service worker...",e);
 	e.waitUntil(
@@ -37,8 +47,25 @@ self.addEventListener('activate',function(e){
 	return self.clients.claim();
 });
 self.addEventListener('fetch',function(e){
+	var url="https://pwademo-563fd.firebaseio.com/posts/first_post";
 	console.log("[Service worker] fetching something...",e);
+	if(e.request.url.indexOf(url)>-1){
+		e.respondWith(fetch(e.request)
+			.then(function(res){
+				var resCloned=res.clone();
+				resCloned.json()
+				.then(function(data){
+					//for(key in data){
+						write_data('posts',data)
+				
+					//}
+				});
+				return res;
+			})
+			)
+	}
 	//e.respondWith(fetch(e.request));
+	else{
 	e.respondWith(
 		caches.match(e.request)
 		.then(function(response){
@@ -55,6 +82,7 @@ self.addEventListener('fetch',function(e){
 			});
 		})
 		)
+}
 });
 self.addEventListener('message', function(event){
     console.log("Service Worker Received Message: " + event.data);

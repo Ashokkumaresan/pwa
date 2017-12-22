@@ -1,4 +1,5 @@
 var deferredPrompt;
+var read_flag=false;
 if('serviceWorker' in navigator){
 	navigator.serviceWorker.register('/sw.js')
 	.then(function(){
@@ -33,12 +34,22 @@ promise.then(function(txt){
 
 fetch('https://pwademo-563fd.firebaseio.com/posts/first_post.json')
 .then(function(res){
+	read_flag=true;
 	return res.json();
 }).then(function(data){
 	load_shared_date(data);
 }).catch(function(err){
 	console.log(err);
 });
+
+if('indexedDB' in window){
+	read_data('posts').then(function(data){
+		if(!read_flag){
+			console.log("From cache:"+data);
+			load_shared_date(data);
+		}
+	});
+}
 
 fetch('https://httpbin.org/post',{
 	method:'POST',
