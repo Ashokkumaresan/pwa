@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var STATIC_CACHE_NAME="static-v15";
-var DYNAMIC_CACHE_NAME="dynamic-v14";
+var STATIC_CACHE_NAME="static-v34";
+var DYNAMIC_CACHE_NAME="dynamic-v33";
 
 var dbPromise=idb.open('posts-store',1,function(db){
 if(!db.objectStoreNames.contains('posts')){
@@ -30,7 +30,7 @@ self.addEventListener('install',function(e){
 				]);
 		})
 		)
-});////////////////////////////////////////////////////////
+});///////////////////////////////////////////////////////////////////////
 
 self.addEventListener('activate',function(e){
 	console.log("[Service worker] activating service worker...",e);
@@ -47,7 +47,7 @@ self.addEventListener('activate',function(e){
 	return self.clients.claim();
 });
 self.addEventListener('fetch',function(e){
-	var url="https://pwademo-563fd.firebaseio.com/posts/first_post";
+	var url="https://pwademo-563fd.firebaseio.com/posts/first_post.json";
 	console.log("[Service worker] fetching something...",e);
 	if(e.request.url.indexOf(url)>-1){
 		e.respondWith(fetch(e.request)
@@ -55,10 +55,10 @@ self.addEventListener('fetch',function(e){
 				var resCloned=res.clone();
 				resCloned.json()
 				.then(function(data){
-					//for(key in data){
+					for(key in data){
 						write_data('posts',data)
 				
-					//}
+					}
 				});
 				return res;
 			})
@@ -81,9 +81,47 @@ self.addEventListener('fetch',function(e){
 				})
 			});
 		})
-		)
+		) 
 }
 });
 self.addEventListener('message', function(event){
     console.log("Service Worker Received Message: " + event.data);
+});
+
+self.addEventListener('sync',function(event){
+	console.log('[Service worker] background syncing',event);
+	if(event.tag==="sync-new-post"){
+		console.log("[Service worker] Syncing new posts");
+		event.waitUntil(
+			read_data('sync-posts')
+				.then(function(data){
+					for(var dt of data){
+					  fetch('https://us-central1-pwademo-563fd.cloudfunctions.net/storePostData',{
+					    method:'POST',
+					    headers:{
+					      'Content-Type':'application/json',
+					      'Accept':'application/json'
+					    },
+					    body:JSON.stringify({
+					        id:dt.id,
+					        title:dt.title,
+					        location:dt.location,
+					        image:'https://firebasestorage.googleapis.com/v0/b/pwademo-563fd.appspot.com/o/pwa-reliable.png?alt=media&token=f1c6bb51-4b56-4a6b-9580-0eaec4c7498c'
+					    })
+  					}).then(function(res){
+      				console.log("Data sent",res);
+      					if(res.ok){
+      						res.json()
+      						 .then(function(resData){
+      						 	delete_data("sync-posts",resData.id);
+      						 });      						
+      					}
+ 					 })
+  					.catch(function(err){
+  						console.log("Error while sending data", err);
+  					});
+  				}
+				})
+			);
+	}
 });

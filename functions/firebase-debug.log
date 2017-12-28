@@ -1,0 +1,27 @@
+[debug] [2017-12-28T13:24:50.302Z] ----------------------------------------------------------------------
+[debug] [2017-12-28T13:24:50.308Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\akumaresan\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase experimental:functions:shell
+[debug] [2017-12-28T13:24:50.310Z] CLI Version:   3.16.0
+[debug] [2017-12-28T13:24:50.310Z] Platform:      win32
+[debug] [2017-12-28T13:24:50.310Z] Node Version:  v6.11.2
+[debug] [2017-12-28T13:24:50.312Z] Time:          Thu Dec 28 2017 17:24:50 GMT+0400 (Arabian Standard Time)
+[debug] [2017-12-28T13:24:50.313Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-12-28T13:24:50.480Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-12-28T13:24:50.482Z] > authorizing via signed-in user
+[debug] [2017-12-28T13:24:50.491Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-12-28T13:24:50.493Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/vcVvUqfqAGTFwMBJCQgU6SaKA8mGg6e0a6ZHxFgJMZM',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Thu Dec 28 2017 17:24:50 GMT+0400 (Arabian Standard Time)
+[debug] [2017-12-28T13:24:51.959Z] <<< HTTP RESPONSE 200
+[debug] [2017-12-28T13:24:51.996Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/pwademo-563fd  
+  
+ Thu Dec 28 2017 17:24:51 GMT+0400 (Arabian Standard Time)
+[debug] [2017-12-28T13:24:54.236Z] <<< HTTP RESPONSE 200
+[debug] [2017-12-28T13:24:54.238Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/pwademo-563fd/tokens  
+  
+ Thu Dec 28 2017 17:24:54 GMT+0400 (Arabian Standard Time)
+[debug] [2017-12-28T13:24:56.016Z] <<< HTTP RESPONSE 200

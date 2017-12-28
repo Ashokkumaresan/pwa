@@ -2,8 +2,8 @@ var shareImageButton = document.querySelector('#share-image-button');
 var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var postbutton=document.querySelector('#post-btn');
-var title=document.querySelector('#title');
-var location=document.querySelector('#location');
+var _title=document.querySelector('#title');
+var _location=document.querySelector('#location');
 
 function openCreatePostModal() {
   console.log("Post Modal");
@@ -36,6 +36,7 @@ function closeCreatePostModal() {
 }
 
 function postMessage(){
+  sendData();
 /*if(window.caches){
   caches.open('App-Cache')
   .then(function(cache){
@@ -43,13 +44,13 @@ function postMessage(){
     cache.add('https://httpbin.org/uuid');
   });
 }*/
-if('serviceWorker' in navigator && 'SyncManager'in window){
+/*if('serviceWorker' in navigator && 'SyncManager' in window){
   navigator.serviceWorker.ready
     .then(function(sw){
       var post={
         id:new Date().toISOString(),
-        title:title.value,
-        location:location.value
+        title:_title.value,
+        location:_location.value
       }
       write_data('sync-posts',post)
       .then(function(){
@@ -63,11 +64,11 @@ if('serviceWorker' in navigator && 'SyncManager'in window){
 }
 else{
   sendData();
-}
+} */
 }
 
 function sendData(){
-  fetch('https://pwademo-563fd.firebaseio.com/posts/first_post.json',{
+  fetch('https://us-central1-pwademo-563fd.cloudfunctions.net/storePostData',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -75,8 +76,8 @@ function sendData(){
     },
     body:JSON.stringify({
         id:new Date().toISOString(),
-        title:title.value,
-        location:location.value,
+        title:_title.value,
+        location:_location.value,
         image:'https://firebasestorage.googleapis.com/v0/b/pwademo-563fd.appspot.com/o/pwa-reliable.png?alt=media&token=f1c6bb51-4b56-4a6b-9580-0eaec4c7498c'
     })
   }).then(function(res){

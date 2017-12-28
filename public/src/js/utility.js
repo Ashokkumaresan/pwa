@@ -23,3 +23,15 @@ function read_data(_table){
 			return store.getAll();
 	});
 }
+
+function delete_data(_table,_data){
+	dbPromise.then(function(db){
+		var tx=db.transaction(_table,'readwrite');
+		var store=tx.objectStore(_table);
+		store.delete(_data);
+		return tx.complete;
+	})
+	.then(function(){
+		console.log("Item deleted");
+	})
+}

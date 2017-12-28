@@ -32,12 +32,14 @@ promise.then(function(txt){
 	console.log(err.code,err.msg);
 });
 
-fetch('https://pwademo-563fd.firebaseio.com/posts/first_post.json')
+fetch('https://pwademo-563fd.firebaseio.com/posts.json')
 .then(function(res){
 	read_flag=true;
 	return res.json();
 }).then(function(data){
-	load_shared_date(data);
+	for(var _dt in data){
+		load_shared_date(data[_dt]);
+}
 }).catch(function(err){
 	console.log(err);
 });
