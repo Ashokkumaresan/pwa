@@ -1,5 +1,7 @@
 var deferredPrompt;
 var read_flag=false;
+var push_noti_btn=document.querySelectorAll('.enable-notifications');
+
 if('serviceWorker' in navigator){
 	navigator.serviceWorker.register('/sw.js')
 	.then(function(){
@@ -72,4 +74,47 @@ function load_shared_date(_data){
 	var _img=document.createElement("img");
 	_img.setAttribute("src",_data.image);
 	_img_holder.append(_img);
+}
+
+function askfornotification(){
+	Notification.requestPermission(function(result){
+		console.log("User Choice",result);
+		if(result!=='granted'){
+			console.log('Denied Notification');
+		}
+		else{
+			console.log('Notification Accepted');
+			displayNotification();
+		}
+	});
+}
+
+function displayNotification(){
+	var options={
+		body:'First Notification Message',
+		icon:'/src/images/icons/app-icon-96x96.png',
+		image:'/src/images/mapps.png',
+		dir:'ltr',
+		lang:'en-US',
+		vibrate:[100,50,200],
+		badge:'/src/images/icons/app-icon-96x96.png',
+		tag:'confirm-notification',
+		renotify:true
+	};
+	if('serviceWorker' in navigator){
+		navigator.serviceWorker.ready
+			.then(function(swreg){
+				swreg.showNotification('Successfiully Subscribed from service worker',options);
+			});
+	}
+	else{
+ new Notification('Successfiully subscribed',options);
+}
+}
+
+if('Notification' in window){
+	for(var i=0;i<push_noti_btn.length;i++){
+		push_noti_btn[i].style.display='inline-block';
+		push_noti_btn[i].addEventListener('click',askfornotification);
+	}
 }

@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var STATIC_CACHE_NAME="static-v34";
-var DYNAMIC_CACHE_NAME="dynamic-v33";
+var STATIC_CACHE_NAME="static-v37";
+var DYNAMIC_CACHE_NAME="dynamic-v36";
 
 var dbPromise=idb.open('posts-store',1,function(db){
 if(!db.objectStoreNames.contains('posts')){
@@ -30,7 +30,7 @@ self.addEventListener('install',function(e){
 				]);
 		})
 		)
-});///////////////////////////////////////////////////////////////////////
+});//////////////////////////////////////////////////////////////////////////////////
 
 self.addEventListener('activate',function(e){
 	console.log("[Service worker] activating service worker...",e);
