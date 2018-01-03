@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var STATIC_CACHE_NAME="static-v37";
-var DYNAMIC_CACHE_NAME="dynamic-v36";
+var STATIC_CACHE_NAME="static-v41";
+var DYNAMIC_CACHE_NAME="dynamic-v41";
 
 var dbPromise=idb.open('posts-store',1,function(db){
 if(!db.objectStoreNames.contains('posts')){
@@ -30,7 +30,7 @@ self.addEventListener('install',function(e){
 				]);
 		})
 		)
-});//////////////////////////////////////////////////////////////////////////////////
+});//////////////////////////////////////////////////
 
 self.addEventListener('activate',function(e){
 	console.log("[Service worker] activating service worker...",e);
@@ -124,4 +124,44 @@ self.addEventListener('sync',function(event){
 				})
 			);
 	}
+});
+
+self.addEventListener('notificationclick',function(event){
+var _action=event.action;
+var _notification=event.notification;
+console.log("event ",event);
+console.log("notification ",_notification);
+if(_action==="confirm"){
+	console.log("Confirm was chosen",_action);
+	_notification.close();
+}
+else{
+	console.log("Cancel",_action);
+	_notification.close();
+}
+});
+
+self.addEventListener('notificationclose',function(event){
+	console.log("Notification was closed",event);
+});
+
+self.addEventListener('push',function(event){
+	console.log("Push notification received",event);
+
+	var data={title:'Static title',content:'Static content'};
+
+	if(event.data){
+		data=JSON.parse(event.data.text());
+	}
+
+	var options={
+		body:data.content,
+		icon:'/src/images/icons/app-icon-96x96.png',
+		badge:'/src/images/icons/app-icon-96x96.png',
+		image:'/src/images/mapps.png'
+	};
+	event.waitUntil(
+		self.registration.showNotification(data.title,options)
+		);
+
 });

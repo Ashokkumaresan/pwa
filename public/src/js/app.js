@@ -84,7 +84,8 @@ function askfornotification(){
 		}
 		else{
 			console.log('Notification Accepted');
-			displayNotification();
+			//displayNotification();
+			configurePushSubscription();
 		}
 	});
 }
@@ -99,7 +100,11 @@ function displayNotification(){
 		vibrate:[100,50,200],
 		badge:'/src/images/icons/app-icon-96x96.png',
 		tag:'confirm-notification',
-		renotify:true
+		renotify:true,
+		actions:[
+				{ action:'confirm',title:'Okay',icon:'/src/images/icons/app-icon-96x96.png'},
+				{ action:'cancel',title:'Cancel',icon:'/src/images/icons/app-icon-96x96.png'}
+		]
 	};
 	if('serviceWorker' in navigator){
 		navigator.serviceWorker.ready
@@ -112,7 +117,52 @@ function displayNotification(){
 }
 }
 
-if('Notification' in window){
+function configurePushSubscription(){
+	if(!('serviceWorker' in navigator)){
+		return false;
+	}	
+	var reg;
+	navigator.serviceWorker.ready
+		.then(function(swreg){
+			reg=swreg;
+			return swreg.pushManager.getSubscription();
+		})
+		.then(function(sub){
+			if(sub===null){
+				//Create new subscription
+				var vapidPublicKey='BO6vhr7zgUKE3Xzl1T-hdYwpXV1KbcPRfVYF_cV305Kt3Vx3GMrhw3oSYMIhizOmflvFYRjEQOaM6KA1MNDyza4';
+				var convertedvapidkey=urlBase64ToUint8Array(vapidPublicKey);
+				return reg.pushManager.subscribe({
+					userVisibleOnly:true,
+					applicationServerKey:convertedvapidkey
+				});
+			}
+			else{
+				// Existing subscription
+			}
+		})
+			.then(function(newSub){
+				return fetch('https://pwademo-563fd.firebaseio.com/subscription.json',{
+					method:'POST',
+					headers:{
+						'Content-Type':'application/json',
+						'Accept':'application/json'
+					},
+					body:JSON.stringify(newSub)
+				})
+			})
+			  .then(function(res){
+			  	if(res.ok){
+			  		displayNotification();
+			  	}
+			  })
+			    .catch(function(err){
+			    	console.log("Error sending subscription",err);
+			    });
+	
+}
+
+if('Notification' in window && 'serviceWorker' in navigator){
 	for(var i=0;i<push_noti_btn.length;i++){
 		push_noti_btn[i].style.display='inline-block';
 		push_noti_btn[i].addEventListener('click',askfornotification);
