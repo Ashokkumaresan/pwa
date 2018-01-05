@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var STATIC_CACHE_NAME="static-v41";
-var DYNAMIC_CACHE_NAME="dynamic-v41";
+var STATIC_CACHE_NAME="static-v44";
+var DYNAMIC_CACHE_NAME="dynamic-v44";
 
 var dbPromise=idb.open('posts-store',1,function(db){
 if(!db.objectStoreNames.contains('posts')){
@@ -137,7 +137,23 @@ if(_action==="confirm"){
 }
 else{
 	console.log("Cancel",_action);
-	_notification.close();
+	event.waitUntil(
+		clients.matchAll()
+			.then(function(cli){
+				var client=cli.find(function(c){
+					return c.visibilityState='visible';
+				});
+
+				if(client!=undefined){
+					client.navigate('https://developers.google.com/web/fundamentals/codelabs/push-notifications/');
+					client.focus();
+				}
+				else{
+					clients.openWindow('https://developers.google.com/web/fundamentals/codelabs/push-notifications/')
+				}
+				_notification.close();
+			})
+		);	
 }
 });
 

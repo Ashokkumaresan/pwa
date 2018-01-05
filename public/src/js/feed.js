@@ -4,6 +4,19 @@ var closeCreatePostModalButton = document.querySelector('#close-create-post-moda
 var postbutton=document.querySelector('#post-btn');
 var _title=document.querySelector('#title');
 var _location=document.querySelector('#location');
+var videoplayer=document.querySelector('#player');
+var canvasholder=document.querySelector('#canvas');
+var captureBtn=document.querySelector('#capture-btn');
+var filepickerBtn=document.querySelector('#image-picker');
+var locationBtn=document.querySelector('#location-btn');
+var fileholder=document.querySelector('#pick-image');
+
+function initializeMedia(){
+  if(!('mediaDevices' in navigator)){
+    navigator.mediaDevices = {};
+  }
+  
+}
 
 function openCreatePostModal() {
   console.log("Post Modal");
@@ -82,6 +95,8 @@ function sendData(){
     })
   }).then(function(res){
       console.log("Data sent",res);
+  }).catch(function(err){
+    console.log("Error",err);
   })
 
 }
