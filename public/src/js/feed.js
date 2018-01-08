@@ -10,12 +10,32 @@ var captureBtn=document.querySelector('#capture-btn');
 var filepickerBtn=document.querySelector('#image-picker');
 var locationBtn=document.querySelector('#location-btn');
 var fileholder=document.querySelector('#pick-image');
+var picture;
 
 function initializeMedia(){
   if(!('mediaDevices' in navigator)){
     navigator.mediaDevices = {};
   }
-  
+  if(!('getUserMedia' in navigator.mediaDevices)){
+    navigator.mediaDevices.getUserMedia=function(constraints){
+      var getUserMedia=navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+      if(!getUserMedia){
+        return Promise.reject(new Error('getUserMedia not implemented'));
+      }
+      return new Promise(function(resolve,reject){
+        getUserMedia.call(navigator,constraints,resolve,reject);
+      });
+    }
+  }
+
+  navigator.mediaDevices.getUserMedia({video:true})
+    .then(function(stream){
+      videoplayer.srcObject=stream;
+      videoplayer.style.display='block';
+    })
+      .catch(function(){
+        fileholder.style.display='block';
+      })
 }
 
 function openCreatePostModal() {
@@ -35,6 +55,7 @@ function openCreatePostModal() {
   	});
   	deferredPrompt=null;
   }
+  initializeMedia();
   if('serviceWorker' in navigator){
     navigator.serviceWorker.getRegistrations()
       .then(function(reg){
@@ -46,6 +67,20 @@ function openCreatePostModal() {
 
 function closeCreatePostModal() {
   createPostArea.style.display = 'none';
+   videoplayer.style.display='none';
+   fileholder.style.display='none';
+}
+
+function captureImage(){
+  canvasholder.style.display="block";
+  videoplayer.style.display="none";
+  captureBtn.style.display="none";
+  var context=canvasholder.getContext("2d");
+  context.drawImage(videoplayer,0,0,canvasholder.width,videoplayer.videoHeight/(videoplayer.videoHeight/canvasholder.width));
+  videoplayer.srcObject.getVideoTracks().forEach(function(track){
+    track.stop();
+  });
+  picture=dataURItoBlob(canvasholder.toDataURL());
 }
 
 function postMessage(){
@@ -81,9 +116,14 @@ else{
 }
 
 function sendData(){
+  var postData=new FormData();
+  postData.append('id',new Date().toISOString());
+  postData.append('title',_title.value);
+  postData.append('location',_location.value);
+  postData.append('file',picture,id +'.png');
   fetch('https://us-central1-pwademo-563fd.cloudfunctions.net/storePostData',{
     method:'POST',
-    headers:{
+   /* headers:{
       'Content-Type':'application/json',
       'Accept':'application/json'
     },
@@ -92,7 +132,8 @@ function sendData(){
         title:_title.value,
         location:_location.value,
         image:'https://firebasestorage.googleapis.com/v0/b/pwademo-563fd.appspot.com/o/pwa-reliable.png?alt=media&token=f1c6bb51-4b56-4a6b-9580-0eaec4c7498c'
-    })
+    })*/
+  body:postData
   }).then(function(res){
       console.log("Data sent",res);
   }).catch(function(err){
@@ -106,3 +147,5 @@ shareImageButton.addEventListener('click', openCreatePostModal);
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 
 postbutton.addEventListener('click',postMessage);
+
+captureBtn.addEventListener('click',captureImage);
