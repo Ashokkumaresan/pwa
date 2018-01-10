@@ -10,6 +10,7 @@ var captureBtn=document.querySelector('#capture-btn');
 var filepickerBtn=document.querySelector('#image-picker');
 var locationBtn=document.querySelector('#location-btn');
 var fileholder=document.querySelector('#pick-image');
+var loc_loader=document.querySelector('#location-loader');
 var picture;
 
 function initializeMedia(){
@@ -66,9 +67,12 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.display = 'none';
+ // createPostArea.style.display = 'none';
    videoplayer.style.display='none';
    fileholder.style.display='none';
+  videoplayer.srcObject.getVideoTracks().forEach(function(track){
+    track.stop();
+  });
 }
 
 function captureImage(){
@@ -83,8 +87,36 @@ function captureImage(){
   picture=dataURItoBlob(canvasholder.toDataURL());
 }
 
+function getLocation(){
+  if('geolocation' in navigator){
+    loc_loader.style.display="block";
+    var options = {
+     enableHighAccuracy: true,
+     timeout: 5000,
+     maximumAge: 0
+};
+
+function success(pos) {
+  var crd = pos.coords;
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+  _location.value="Latitude: "+ crd.latitude +" Longitude: "+ crd.longitude;
+  loc_loader.style.display="none";
+};
+
+function error(err) {
+  loc_loader.style.display="none";
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+};
+    navigator.geolocation.getCurrentPosition(success,error);   
+  }
+}
+
 function postMessage(){
   sendData();
+  //uploadImage();
 /*if(window.caches){
   caches.open('App-Cache')
   .then(function(cache){
@@ -116,8 +148,9 @@ else{
 }
 
 function sendData(){
+  var id=new Date().toISOString();
   var postData=new FormData();
-  postData.append('id',new Date().toISOString());
+  postData.append('id',id);
   postData.append('title',_title.value);
   postData.append('location',_location.value);
   postData.append('file',picture,id +'.png');
@@ -142,6 +175,20 @@ function sendData(){
 
 }
 
+function uploadImage(){
+    var id=new Date().toISOString();
+    var postData=new FormData();
+     postData.append('file',picture,id +'.png');
+       fetch('https://us-central1-pwademo-563fd.cloudfunctions.net/storeImages',{
+        method:'POST',  
+        body:postData
+     }).then(function(res){
+      console.log("Data sent",res);
+    }).catch(function(err){
+      console.log("Error",err);
+    })
+}
+
 shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
@@ -149,3 +196,9 @@ closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 postbutton.addEventListener('click',postMessage);
 
 captureBtn.addEventListener('click',captureImage);
+
+locationBtn.addEventListener('click',getLocation);
+
+filepickerBtn.addEventListener('change',function(event){
+  picture=event.target.files[0];
+});

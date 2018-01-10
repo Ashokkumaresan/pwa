@@ -130,7 +130,7 @@ function configurePushSubscription(){
 		.then(function(sub){
 			if(sub===null){
 				//Create new subscription
-				var vapidPublicKey='BO6vhr7zgUKE3Xzl1T-hdYwpXV1KbcPRfVYF_cV305Kt3Vx3GMrhw3oSYMIhizOmflvFYRjEQOaM6KA1MNDyza4';
+				var vapidPublicKey='BDh2JjowM9kzNJKrz4T3HXWaSP88vCBFLl6ao44sfE6XAgJlYpNsn_yRk1h959hFNIvlpR2XJB57w_0inI_mEOM';
 				var convertedvapidkey=urlBase64ToUint8Array(vapidPublicKey);
 				return reg.pushManager.subscribe({
 					userVisibleOnly:true,

@@ -23,6 +23,10 @@
   display: none;
 }
 
+#location-loader{
+  display: none;
+}
+
 #create-post #capture-btn {
   margin: 10px auto;
 }

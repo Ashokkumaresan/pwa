@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var STATIC_CACHE_NAME="static-v46";
-var DYNAMIC_CACHE_NAME="dynamic-v46";
+var STATIC_CACHE_NAME="static-v56";
+var DYNAMIC_CACHE_NAME="dynamic-v56";
 
 var dbPromise=idb.open('posts-store',1,function(db){
 if(!db.objectStoreNames.contains('posts')){
