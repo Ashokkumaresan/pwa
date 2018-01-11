@@ -177,11 +177,15 @@ function sendData(){
 
 function uploadImage(){
     var id=new Date().toISOString();
-    var postData=new FormData();
-     postData.append('file',picture,id +'.png');
+    //var postData=new FormData();
+     //postData.append('file',picture,id +'.png');
        fetch('https://us-central1-pwademo-563fd.cloudfunctions.net/storeImages',{
         method:'POST',  
-        body:postData
+        headers:{
+      'Content-Type':'application/json',
+      'Accept':'application/json'
+    },
+        body:JSON.stringify({Id:id })
      }).then(function(res){
       console.log("Data sent",res);
     }).catch(function(err){
